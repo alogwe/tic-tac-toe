@@ -8,8 +8,8 @@ using namespace std;
 class Board
 {
 private:
-	int columns;
-	int rows;
+	int columns = 1;
+	int rows = 1;
 	vector<vector<string>> square;
 
 	bool checkHorizontalWinner(string);

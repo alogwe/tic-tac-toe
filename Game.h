@@ -11,11 +11,11 @@ using namespace std;
 class Game
 {
 private:
-	string title;
-	int maxPlayers;
-	string lastMove;
+	string title = "";
+	int maxPlayers = 1;
+	string lastMove = "";
 	Player* currentPlayer;
-	Player* lastPlayer;
+	Player* previousPlayer;
 
 	vector<Player*> players;
 	Board* board;

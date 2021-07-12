@@ -54,7 +54,7 @@ Game::~Game()
 void Game::start()
 {
 	currentPlayer = players[0];
-	lastPlayer = players[1];
+	previousPlayer = players[1];
 
 	cout << "\n\n\n";
 	cout << "\t\t\t" << "Welcome to '" << title << "'";
@@ -85,7 +85,7 @@ void Game::turn()
 	{
 		if ("" != lastMove)
 		{
-			cout << "Player " << lastPlayer->number;
+			cout << "Player " << previousPlayer->number;
 			cout << " chose " << lastMove << endl;
 		}
 
@@ -114,12 +114,12 @@ void Game::nextPlayer()
 		if (1 == currentPlayer->number)
 		{
 			currentPlayer = players[1];
-			lastPlayer = players[0];
+			previousPlayer = players[0];
 		}
 		else if (2 == currentPlayer->number)
 		{
 			currentPlayer = players[0];
-			lastPlayer = players[1];
+			previousPlayer = players[1];
 		}
 	}
 	else
@@ -166,7 +166,7 @@ void Game::announceWinner()
 	else
 	{
 		cout << endl;
-		cout << "Player " << to_string(lastPlayer->number) << " wins!" << endl;
+		cout << "Player " << to_string(previousPlayer->number) << " wins!" << endl;
 	}
 }
 
