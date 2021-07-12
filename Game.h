@@ -2,8 +2,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "KeyMap.h"
+#include "Player.h"
 #include "Board.h"
+#include "KeyMap.h"
 
 using namespace std;
 
@@ -13,12 +14,14 @@ private:
 	string title;
 	int maxPlayers;
 	string lastMove;
-	int currentPlayer;
-	int lastPlayer;
-	string lastError;
+	Player* currentPlayer;
+	Player* lastPlayer;
 
+	vector<Player*> players;
 	Board* board;
 	KeyMap* keys;
+
+	vector<Player*> createPlayers(int);
 
 public:
 	Game(string, int);
@@ -30,6 +33,7 @@ public:
 	void draw();
 	void clear();
 	bool hasWinner();
+	bool isTied();
 	void announceWinner();
 	void end();
 };

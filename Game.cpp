@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
+#include <assert.h>
 #include "Game.h"
 #include "KeyMap.h"
 #include "Board.h"
-#include <assert.h>
 
 using namespace std;
 
@@ -12,12 +12,37 @@ Game::Game(string title, int maxPlayers)
 {
 	assert("" != title);
 	assert(maxPlayers > 0);
-
-	lastMove = "";
-	currentPlayer = 1;
-	lastPlayer = 2;
+	players = createPlayers(maxPlayers);
 	board = new Board(3, 3);
 	keys = new KeyMap();
+}
+
+vector<Player*> Game::createPlayers(int numOfPlayers)
+{
+	int number = 0;
+	string symbol = "";
+	vector<Player*> vPlayers;
+	for (int i = 0; i < numOfPlayers; i++)
+	{
+		if (0 == i)
+		{
+			number = 1;
+			symbol = "X";
+		}
+		else
+		{
+			number = 2;
+			symbol = "O";
+		}
+		Player* p = new Player(number, symbol);
+		vPlayers.push_back(p);
+
+		//auto pp = std::addressof(*p);
+		//cout << "Created Player " << to_string(number) << " at " << pp << endl;
+}
+
+	//getchar();
+	return vPlayers;
 }
 
 Game::~Game()
@@ -28,6 +53,9 @@ Game::~Game()
 
 void Game::start()
 {
+	currentPlayer = players[0];
+	lastPlayer = players[1];
+
 	cout << "\n\n\n";
 	cout << "\t\t\t" << "Welcome to '" << title << "'";
 	cout << "\n\n\n";
@@ -49,37 +77,29 @@ string Game::getUserInput(string prompt)
 	return input;
 }
 
-// TODO: exception handling
 void Game::turn()
 {
 	draw();
 	
-	if ("" != lastError)
-	{
-		cout << lastError << endl;
-		lastError = "";
-	}
-	else
+	try
 	{
 		if ("" != lastMove)
 		{
-			cout << "Player " << lastPlayer << " chose " << lastMove << endl;
+			cout << "Player " << lastPlayer->number;
+			cout << " chose " << lastMove << endl;
 		}
-	}
 
-	cout << endl;
+		lastMove = getUserInput("Player " + to_string(currentPlayer->number) + ", choose your next move (1 - 9), then press 'Enter'");
 
-	lastMove = getUserInput("Player " + to_string(currentPlayer) + ", choose your next move (1 - 9), then press 'Enter'");
-	
-	if (board->update(keys, lastMove, currentPlayer))
-	{
-		lastError = "";
+		board->update(keys, lastMove, currentPlayer);
 		draw();
 		nextPlayer();
 	}
-	else
+	catch (exception& e)
 	{
-		lastError = "ERROR: board->update unsuccessful\n";
+		cout << e.what() << endl;
+		lastMove = ""; // because last move was invalid
+		getchar();
 	}
 }
 
@@ -87,24 +107,24 @@ void Game::nextPlayer()
 {
 	if (1 == maxPlayers)
 	{
-		currentPlayer = maxPlayers;
+		currentPlayer = players[0];
 	}
 	if (2 == maxPlayers)
 	{
-		if (1 == currentPlayer)
+		if (1 == currentPlayer->number)
 		{
-			currentPlayer = 2;
-			lastPlayer = 1;
+			currentPlayer = players[1];
+			lastPlayer = players[0];
 		}
-		else if (2 == currentPlayer)
+		else if (2 == currentPlayer->number)
 		{
-			currentPlayer = 1;
-			lastPlayer = 2;
+			currentPlayer = players[0];
+			lastPlayer = players[1];
 		}
 	}
 	else
 	{
-		// TODO: support any number of players
+		// TODO: use vector iterator and support any number of players?
 	}
 }
 
@@ -113,6 +133,8 @@ void Game::draw()
 	clear();
 	cout << endl;
 	cout << title << endl;
+	cout << endl;
+	cout << "Each square on the board corresponds to the numbers on your keyboard's numpad." << endl;
 
 	board->draw();
 }
@@ -128,11 +150,24 @@ bool Game::hasWinner()
 	return board->checkWinner("X") || board->checkWinner("O");
 }
 
+bool Game::isTied()
+{
+	return !board->hasOpenSquares();
+}
+
 // lastPlayer made the winning move
 void Game::announceWinner()
 {
-	cout << endl;
-	cout << "Player " << to_string(lastPlayer) << " wins!" << endl;
+	if (isTied())
+	{
+		cout << endl;
+		cout << "Tie game, no winner!" << endl;
+	}
+	else
+	{
+		cout << endl;
+		cout << "Player " << to_string(lastPlayer->number) << " wins!" << endl;
+	}
 }
 
 void Game::end()
@@ -144,7 +179,7 @@ void Game::end()
 	announceWinner();
 	
 	cout << endl;
-	cout << "Game over, thanks for playing!" << endl;
+	cout << "Game over" << endl;
 	cout << "Press 'Enter' to exit" << endl;
 	
 	getchar();

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <exception>
 #include "Game.h"
 
 
@@ -9,7 +10,7 @@ int main()
 	
 	do {
 		game.turn();
-	} while (!game.hasWinner());
+	} while (!game.hasWinner() && !game.isTied());
 	
 	game.end();
 	

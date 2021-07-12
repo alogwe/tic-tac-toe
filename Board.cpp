@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
+#include <exception>
 #include "Board.h"
 #include "KeyMap.h"
+#include "Player.h"
 
 using namespace std;
 
@@ -84,19 +86,9 @@ void Board::draw()
 }
 
 
-bool Board::update(KeyMap* keys, string move, int player)
+void Board::update(KeyMap* keys, string move, Player* player)
 {
-	string symbol;
-	bool updateSuccessful = true;
-
-	if (1 == player)
-	{
-		symbol = "X";
-	}
-	else
-	{
-		symbol = "O";
-	}
+	string symbol = player->symbol;
 
 	if (keys->BOTTOM_LEFT == move && squareIsOpen(square[2][0]))
 	{
@@ -136,13 +128,8 @@ bool Board::update(KeyMap* keys, string move, int player)
 	}
 	else
 	{
-		// TODO: properly handle
-		updateSuccessful = false;
-		cout << "Invalid choice." << endl;
-		getchar();
+		throw exception("Invalid choice. That square is not available.");
 	}
-
-	return updateSuccessful;
 }
 
 
@@ -157,4 +144,21 @@ bool Board::checkWinner(string symbol)
 bool Board::squareIsOpen(string squareValue)
 {
 	return squareValue == " " || squareValue == "";
+}
+
+
+bool Board::hasOpenSquares()
+{
+	for (auto row : square)
+	{
+		for (auto cell : row)
+		{
+			if (squareIsOpen(cell))
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
