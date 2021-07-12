@@ -1,14 +1,15 @@
 #pragma once
 #include <vector>
 #include "KeyMap.h"
+#include "Player.h"
 
 using namespace std;
 
 class Board
 {
 private:
-	int columns;
-	int rows;
+	int columns = 1;
+	int rows = 1;
 	vector<vector<string>> square;
 
 	bool checkHorizontalWinner(string);
@@ -20,8 +21,9 @@ public:
 	~Board();
 
 	void draw();
-	bool update(KeyMap*, string, int);
+	void update(KeyMap*, string, Player*);
 	bool checkWinner(string);
 	bool squareIsOpen(string);
+	bool hasOpenSquares();
 };
 
