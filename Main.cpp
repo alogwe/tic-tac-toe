@@ -8,9 +8,10 @@ int main()
 	Game game = Game("Tic-Tac-Toe", 2);
 	game.start();
 	
-	do {
+	do
+	{
 		game.turn();
-	} while (!game.hasWinner() && !game.isTied());
+	} while (!game.isOver());
 	
 	game.end();
 	

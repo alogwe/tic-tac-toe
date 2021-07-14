@@ -155,6 +155,11 @@ bool Game::isTied()
 	return !board->hasOpenSquares();
 }
 
+bool Game::isOver()
+{
+	return hasWinner() || isTied();
+}
+
 // lastPlayer made the winning move
 void Game::announceWinner()
 {
@@ -172,8 +177,9 @@ void Game::announceWinner()
 
 void Game::end()
 {
-	// have to draw final state of board,
-	// after winning move is made by lastPlayer
+	// because we have to draw the final
+	// "winning" state of the board,
+	// after lastPlayer
 	draw();
 
 	announceWinner();

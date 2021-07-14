@@ -34,6 +34,7 @@ public:
 	void clear();
 	bool hasWinner();
 	bool isTied();
+	bool isOver();
 	void announceWinner();
 	void end();
 };
